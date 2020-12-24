@@ -26,7 +26,7 @@ import string
 #
 def recup_utilisateurs_inactifs(cfg):
 	""" Fonction chargée de récupérer les utilisateurs inactifs de l'AD"""
-	# On definit les parametres necessaires de connexion AD
+	# Definition des parametres necessaires de connexion AD
 	ad_host = cfg.get('AD', 'ad_host')
 	ad_login = cfg.get('AD', 'ad_login')
 	ad_password = cfg.get('AD', 'ad_password')
@@ -34,17 +34,20 @@ def recup_utilisateurs_inactifs(cfg):
 	ad_filter = cfg.get('AD', 'ad_filter')
 	ad_user = cfg.get('AD', 'ad_user')
 	ad_alias = cfg.get('AD', 'ad_alias')
-	# On definit les methodes de connexion sur l'AD
+	# Definition des methodes de connexion sur l'AD
 	server =  Server(ad_host, get_info=ALL)
 	conn_server = Connection(server, ad_login, ad_password, auto_bind=True)
-	# On definit le filtre de recherche sur l'AD
+	# Definition du filtre de recherche sur l'AD
 	attrs = [ad_user, ad_alias]
 	conn_server.search(ad_dir_disabled_users, ad_filter, attributes = attrs)
 	disabled_users = [] 
-	# On parcourt les lignes de chaque compte récupérés dans l'AD, et on ajoute
+	# Parcourt des lignes de chaque compte récupérés dans l'AD
 	for row in conn_server.entries:
+		# Si Attribut de l'AD present dans la ligne
 		if ad_user in row :
+			# Creation d'une variable 'mail'
 	    		mail = ('%s@ch-tourcoing.fr' % (row[ad_user]))
+			# Ajout du mail de l'utilisateur desactivé à la liste
 			disabled_users.append(mail.rstrip())
 	# On retourne la liste des utilisateurs AD désactivés
 	return disabled_users

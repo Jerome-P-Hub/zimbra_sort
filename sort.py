@@ -20,15 +20,17 @@ import ConfigParser
 
 
 # Test a blanc
-dryrun = True
+dryrun = False
 
 # on effectue la lecture des donnees contenues dans le fichier conf.ini
 cfg = ConfigParser.ConfigParser()
-cfg.read('/root/scripts/conf.ini')
+cfg.read('/scripts/conf.ini')
 
 
 
 """ On récupère les fonctions necessaires dans des listes """
+
+recup_precedents_utilisateurs = recup_precedents_utilisateurs_(cfg)
 
 utilisateurs_ad_desactives = recup_utilisateurs_inactifs(cfg)
 
@@ -44,13 +46,18 @@ list_tmp_archivage = list_tmp_archivage(cfg, utilisateurs_zimbra_a_desactiver, d
 
 suppression_archive_local = suppr_tmp_archivage(list_tmp_archivage, dryrun)
 
+Copie_archives_vers_lecteur = copy_tmp_archivage(cfg, dryrun)
 
+liste_archivage = list_archivage(cfg, dryrun)
 
+suppression_archivage = suppr_archivage(liste_archivage, dryrun)
 
+suppression_zimbra_utilisateur = suppression_utilisateurs_zimbra(cfg, utilisateurs_zimbra_a_desactiver, dryrun)
 
-""" Enregistrement de la liste des comptes Zimbra dans un fichier texte pour comparaison le lendemain"""
-with open('liste_zimbra.txt', 'w') as liste_zimbra:
-	liste_zimbra.write(str(utilisateurs_zimbra))
+liste_nouveaux = liste_nouveaux(recup_precedents_utilisateurs, utilisateurs_zimbra)
+
+ajout_archive = ajout_archive(cfg, liste_nouveaux, dryrun)
+
 
 
 
