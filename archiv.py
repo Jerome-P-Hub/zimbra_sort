@@ -4,9 +4,20 @@
 
 
 
-"""Ce fichier permet de lister les agents présents sur Zimbra
+"""
+archiv.py
 
-Il s'appuie sur le fichier conf.ini """
+Ce script archive dans un dossier temporaire la BAL des utilisateurs desactivés, puis copie la BAL compressée sur un lecteur réseau partagé pour retention du fichier.
+Il supprime apres quelques temps le fichier compressé dans le repertoire temporaire et compare egalement les BAL archivées avec les nouveaux utilisateurs zimbra pour reincorporer si l'utilisateur est deja venu son ancienne archive. 
+
+Author: Jerome Plewa
+Version: 1.0
+Date: 12/2020
+
+Il charge et utilise le fichier conf.ini contenant les differents parametres obligatoires
+"""
+
+
 
 
 
@@ -18,7 +29,7 @@ import datetime
 import csv
 import glob
 import shutil
-
+from logs import *
 
 
 
@@ -43,13 +54,13 @@ def archivage_utilisateur_zimbra(cfg, utilisateurs_zimbra_a_desactiver, dryrun):
 		# Création de la commande personnalisée à l'utilisateur
                	archivage = zcmd_archiv_user % (user, archiv_tmp_dir, user)
 		# Affichage de la commande à exécuter pour archiver la BAL
-                print ('Commande a effectuer pour creer l\'archive: %s') % archivage
+		log("INFO", "archiv", "Commande zimbra utilisée pour générer l'archive de l'utilisateur: %s" % (archivage))
                 # Verification du boolen dryrun puis execution de la commande si dryrun défini sur false
 		if not dryrun:
 			# On exécute la commande Zimbra	
                         os.system(archivage)
 			# On affiche que l'archive de l'utilisateur est maintenant créée
-                        print ('Archive de l\'Utilisateur "%s" créée') % user
+			log("INFO", "archiv", "Archive de l'utilisateur '%s' correctement créée" % (user))
        	return 
 
 
@@ -81,7 +92,9 @@ def list_tmp_archivage(cfg, utilisateurs_zimbra_a_desactiver, dryrun):
 	# Création d' une liste pour récupérer les fichiers .tgz plus anciens qu'attendue
 	liste_fichiers_tmp = []
 	# Parcourt des fichiers .tgz du répertoire concerné
+	log("INFO", "archiv", "Analyse des archives actuellement sauvegardées dans le répertoire temporaire")
 	for somefile in glob.glob (archiv_tmp_dir + '/*'):
+		log("INFO", "archiv", "Archive '%s' présente dans le répertoire temporaire" % (somefile))
 		# Création d'une variable qui récupere la date de modification du fichier
 		mtime = os.path.getmtime (somefile)
 		# Création d'une variable de la difference entre la date d'aujourd'hui et celle de modification du fichier
@@ -89,7 +102,7 @@ def list_tmp_archivage(cfg, utilisateurs_zimbra_a_desactiver, dryrun):
 		# Si ce delta est supérieur à celui attendu, défini dans le fichier conf.ini, alors on affiche le fichier avec son chemin et on l'enregistre dans la liste prévue
 		if delta > float(archiv_tmp_dir_duration) :
 			# Affichage du fichier trop ancien amené a être supprimé
-			print ("Repertoire en instance de suppression: %s" % somefile)
+			log("INFO", "archiv", "Cette archive '%s' dépasse le temps limite de sauvegarde dans le répertoire temporaire, demande de suppression en cours..." % (somefile))
 			liste_fichiers_tmp.append(somefile)
 	# On retourne la liste des fichiers .tgz à effacer du dossier temporaire	
 	return liste_fichiers_tmp
@@ -109,10 +122,11 @@ def suppr_tmp_archivage(list_tmp_archivage, dryrun):
 	for somefile in list_tmp_archivage:
 		# Verification du boolen dryrun puis execution de la commande si dryrun défini sur false
 		if not dryrun:
+			log("INFO", "archiv", "Suppression de l'archive '%s' dans le répertoire temporaire..." % (somefile))
 			# Execution de la commande de suppression du fichier .tgz trop vieux
 			os.remove(somefile)
 			# Affichage de la suppression du fichier concerné
-			print ("Fichier '%s' supprimé" % somefile)
+			log("INFO", "archiv", "Archive temporaire '%s' correctement supprimé" % (somefile))
 	return
 
 
@@ -147,7 +161,7 @@ def copy_tmp_archivage(cfg, dryrun):
 			# Attribution des droits sur l'archive dans le dossier perenne, necessaire a un potentiel import furtur
 			os.system(chown)
 			# Affichage de la l'execution de la copie vers le repertoire perenne
-			print ('Copie de %s%s vers %s%s') % (archiv_tmp_dir, somefile, archiv_dir, somefile)
+			log("INFO", "archiv", "Archive '%s%s' correctement transféré vers '%s%s'" % (archiv_tmp_dir, somefile, archiv_dir, somefile))
 	return 
 
 
@@ -184,7 +198,6 @@ def list_archivage(cfg, dryrun):
 		delta = actual_time - mtime_archive
 		# Si ce delta est supérieur à celui attendu, défini dans le fichier conf.ini, alors on affiche le fichier avec son chemin et on l'enregistre dans la liste prévue
 		if delta > float(archiv_duration) :
-			print (somefile)
 			liste_fichiers_archive.append(somefile)
 	# Renvoie de la liste des fichiers .tgz à supprimer du dossier temporaire	
 	return liste_fichiers_archive
@@ -231,7 +244,7 @@ def liste_nouveaux(recup_precedents_utilisateurs, utilisateurs_zimbra):
 	# Affichage et enregistrement de chaque utilisateur dans la liste "new_users" 
 	for user in diff:
 		new_users.append(user)
-	print ('Nouveaux utilisateurs: %s ' % new_users)
+		log("INFO", "archiv", "Nouvel utilisateur Zimbra détecté : '%s'" % (user))
 	# Renvoi de la liste "new_users" à la fonction
 	return new_users
 
@@ -261,21 +274,14 @@ def ajout_archive(cfg, liste_nouveaux, dryrun):
 			# Creation de la commande d'import pour l'utilisateur 
 			ajout = zcmd_add_archiv_user % (user, archiv_dir, user)
 			# Affichage de la commande lancée
-			print (ajout)
+			log("INFO", "archiv", "Le Nouvel utilisateur Zimbra '%s' possède une sauvegarde de sa BAL" % (user))
 			# Verification du boolen dryrun puis execution de la commande si dryrun défini sur false
 			if not dryrun:
+				log("INFO", "archiv", "Commande Zimbra pour incorporation de la sauvegarde dans la BAL: '%s'" % (ajout))
 				os.system(ajout)
+				log("INFO", "archiv", "Archive '%s' correctement ajouté la BAL '%s'" % (dest, user))
 	return	
 	
-
-
-
-
-
-
-
-
-
 
 
 
