@@ -1,6 +1,6 @@
 # Zimbra-Sort
 
-L'objectif premier de ce script est de tourner au plus près des utilisateurs actifs (présents) dans l'organistation afin d'économiser les licenses requises embarquées sur un serveur Zimbra Collaboration Network Edition afin de réduire les coûts d'acquisition des licences. Cela inclut des économies de temps passés à faire ces manipulations au quotidien, ce qui peut vite devenir redondant et chronophage dans une entreprise il y a beaucoup de turn-over et/ou il y a beaucoup d'utilisateurs finaux de la messagerie.
+L'objectif premier de ce script est de tourner au plus près des utilisateurs actifs (présents) dans l'organistation afin d'économiser les licenses requises embarquées sur un serveur Zimbra Collaboration Network Edition et d'ainsi réduire les coûts d'acquisition des licences. Cela inclut des économies de temps passés à faire ces manipulations au quotidien, ce qui peut vite devenir redondant et chronophage dans une entreprise il y a beaucoup de turn-over et/ou il y a beaucoup d'utilisateurs finaux de la messagerie.
  <br>     Le second objectif est de stocker les BAL archivées sur du stockage à faible coût permettant ainsi d'économiser de l'espace sur votre baie à haut rendement incluant de haut coûts d'investissement et de maintenance. Cela permet donc de sauvegarder les BAL sur du stockage froid tel un NAS.
   <br>     Un des autres objectifs du script est de créer un alias automatiquement en fonction de vos besoins, cela impose le prérequis d'embarquer dans son AD l'attribut userPrincipalName renseigné au préalable par l'alias necessaire à créer dans ZImbra (module désactivable)
   <br>     Si vous pratiquer un nommage unique pour les utilisateurs présents chez vous, alors , lors de leur retour dans l'entreprise (turn-over), la précédente BAL sauvegardée est automatiquement uploader dans la BAL de l'utilisateur revenue etil bénéficie ainsi de l'accès à ces précédents mails. (désactivable également)
@@ -66,7 +66,7 @@ Script Python appelant différents modules.
              
  <br>
     
-   Si le script des alias est non necessaire, editer le fichier sort.py et ajouter un # en début de ligne  sur les 3 derniereres fonctions, de la sorte:
+   Si le script des alias est non nécessaire, editer le fichier sort.py et ajouter un # en début de ligne  sur les 3 derniereres fonctions, de la sorte:
              
               #utilisateurs_ad_actifs = recup_utilisateurs_actifs(cfg)
               #utilisateurs_alias = recup_alias(cfg)
