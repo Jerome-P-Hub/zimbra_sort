@@ -3,7 +3,6 @@
 
 
 
-
 """
 alias.py
 
@@ -51,27 +50,31 @@ def creation_alias(cfg, utilisateurs_ad_actifs, utilisateurs_alias, dryrun):
 	# creation d'une liste alias_zimbra contenant les alias a créer
 	alias_zimbra = []
 	# Pour chaque items du dictionnaire "zimbra_users", on associe value à key => key : value
-	for key, value in zimbra_users.items():
+	for key_zimbra, value_zimbra in zimbra_users.items():
+		key_zimbra = key_zimbra.rstrip()
+		value_zimbra = value_zimbra.rstrip()
 		# Si la valeur correspond à "[]" alors:
-		if value == "[]":
+		if value_zimbra == "[]":
 			# Pour chaque items du dictionnaire "ad_users", on associe value2 à key2 => key2 : value2
-			for key2, value2 in ad_users.items():
+			for key_ad, value_ad in ad_users.items():
+				key_ad = key_ad.rstrip()
+				value_ad = value_ad.rstrip()
 				# Si key2 correspond à key alors
-				if key2.rstrip() == key.rstrip():
+				if key_ad == key_zimbra:
 					# Si ad_domain compris dans value2 alors
-					if ad_domain in value2.rstrip():
+					if ad_domain in value_ad:
 						# Ajout de cette valeur a la liste alias_zimbra
-						alias_zimbra.append(value2.rstrip())
+						alias_zimbra.append(value_ad)
 						# Log de l'information 
-						log("INFO", "alias", "Utilisateur Zimbra nécessitant la création d'un alias: %s" % (value2.rstrip()))
+						log("INFO", "alias", "Utilisateur Zimbra nécessitant la création d'un alias: %s" % (value_ad))
 						# Définition d'une variable "creation_user_alias" contenant la commande à utiliser sur zimbra pour créer l'alias
-						creation_user_alias = zcmd_add_user_alias % (key.rstrip(), value2.rstrip())
+						creation_user_alias = zcmd_add_user_alias % (key_zimbra, value_ad)
 						#  Verification du boolen dryrun puis execution de la commande si dryrun défini sur false
 						if not dryrun:
 							# Creation de l'alias
         		                                os.system(creation_user_alias)
 							#log de la creation de l'alias
-							log("INFO", "alias", "Alias Zimbra %s créé" % (value2.rstrip()))
+							log("INFO", "alias", "Alias Zimbra %s créé" % (value_ad))
 	return	
 
 

@@ -3,25 +3,12 @@
 
 
 
-
-"""
-sort.py
-
-Ce fichier execute les actions necessaires au tri des utilisateurs n'étant plus présents dans Zimbra 
-
-
-Author: Jerome Plewa
-Version: 1.0
-Date: 12/2020
+"""Ce fichier execute les actions necessaires au tri des utilisateurs n'étant plus présents dans Zimbra 
 
 
 Il s'appuie sur les fichiers :
 - ad.py
-- zimbra.py
-- archiv.py
-- logs.py
-- alias.py
-"""
+- zimbra.py """
 
 
 import sys
@@ -61,6 +48,8 @@ palliatif_utilisateurs_zimbra = palliatif_recup_utilisateurs(cfg)
 recup_precedents_utilisateurs = recup_precedents_utilisateurs(cfg, palliatif_utilisateurs_zimbra)
 utilisateurs_ad_desactives = recup_utilisateurs_inactifs(cfg)
 utilisateurs_zimbra = recup_utilisateurs(cfg)
+liste_nouveaux = liste_nouveaux(recup_precedents_utilisateurs, utilisateurs_zimbra)
+ajout_archive = ajout_archive(cfg, liste_nouveaux, dryrun)
 utilisateurs_zimbra_a_desactiver = recup_zimbra_utilisateurs_a_desactiver(utilisateurs_ad_desactives, utilisateurs_zimbra)
 desactivation_zimbra_utilisateur = desactivation_utilisateurs_zimbra(cfg, utilisateurs_zimbra_a_desactiver, dryrun)
 archivage_zimbra_utilisateur = archivage_utilisateur_zimbra(cfg, utilisateurs_zimbra_a_desactiver, dryrun)
@@ -70,8 +59,6 @@ Copie_archives_vers_lecteur = copy_tmp_archivage(cfg, dryrun)
 liste_archivage = list_archivage(cfg, dryrun)
 suppression_archivage = suppr_archivage(liste_archivage, dryrun)
 suppression_zimbra_utilisateur = suppression_utilisateurs_zimbra(cfg, utilisateurs_zimbra_a_desactiver, dryrun)
-liste_nouveaux = liste_nouveaux(recup_precedents_utilisateurs, utilisateurs_zimbra)
-ajout_archive = ajout_archive(cfg, liste_nouveaux, dryrun)
 utilisateurs_ad_actifs = recup_utilisateurs_actifs(cfg)
 utilisateurs_alias = recup_alias(cfg)
 creation_alias = creation_alias(cfg, utilisateurs_ad_actifs, utilisateurs_alias, dryrun)

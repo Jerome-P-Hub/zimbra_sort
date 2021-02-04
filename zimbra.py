@@ -3,7 +3,6 @@
 
 
 
-
 """
 zimbra.py
 
@@ -240,7 +239,7 @@ def suppression_utilisateurs_zimbra(cfg, utilisateurs_zimbra_a_desactiver, dryru
 		# Récuperation de la commande à executer sur le compte
 		suppression = zcmd_del_user % user
 		# Affichage de la commande et le compte sur lequel le script va s'executer
-		log("INFO", "zimbra", "Commande zimbra pour suppression de l'utilisateur: %s") % (suppression)
+		log("INFO", "zimbra", "Commande zimbra pour suppression de l'utilisateur: %s" % (suppression))
 		if not dryrun:
 			# Exécution de la commande Zimbra
                		os.system(suppression)
