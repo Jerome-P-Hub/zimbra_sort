@@ -49,19 +49,19 @@ def creation_alias(cfg, utilisateurs_ad_actifs, utilisateurs_alias, dryrun):
 	zimbra_users = utilisateurs_alias
 	# creation d'une liste alias_zimbra contenant les alias a créer
 	alias_zimbra = []
-	# Pour chaque items du dictionnaire "zimbra_users", on associe value à key => key : value
+	# Pour chaque items du dictionnaire "zimbra_users", on associe value à key_zimbra => key_zimbra : value_zimbra
 	for key_zimbra, value_zimbra in zimbra_users.items():
 		key_zimbra = key_zimbra.rstrip()
 		value_zimbra = value_zimbra.rstrip()
 		# Si la valeur correspond à "[]" alors:
 		if value_zimbra == "[]":
-			# Pour chaque items du dictionnaire "ad_users", on associe value2 à key2 => key2 : value2
+			# Pour chaque items du dictionnaire "ad_users", on associe value_ad à key_ad => key_ad : value_ad
 			for key_ad, value_ad in ad_users.items():
 				key_ad = key_ad.rstrip()
 				value_ad = value_ad.rstrip()
-				# Si key2 correspond à key alors
+				# Si key_ad correspond à key_zimbra alors
 				if key_ad == key_zimbra:
-					# Si ad_domain compris dans value2 alors
+					# Si ad_domain compris dans value_ad alors
 					if ad_domain in value_ad:
 						# Ajout de cette valeur a la liste alias_zimbra
 						alias_zimbra.append(value_ad)

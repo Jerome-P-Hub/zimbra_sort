@@ -280,10 +280,8 @@ def recup_alias(cfg):
         # Definition du filtre de recherche sur le ldap Zimbra
         attrs = [zimbra_user, zimbra_alias]
         conn_server.search(zimbra_dir_users, zimbra_filter, attributes = attrs)
-        #log("INFO", "zimbra", "Connection établie sur l'annuaire LDAP Zimbra")
         # Creation d'un dictionnaire des utilisateurs zimbra avec leur alias associé si présent
         zimbra_enabled_users = {}
-        #log("INFO","zimbra", "Récupération des utilisateurs zimbra actifs sur le serveur")
         # Pour chaque ligne récupérées dans le ldap Zimbra
         for row in conn_server.entries:
 		# Si l'utilisateur zimbra est présent dans la ligne
@@ -293,7 +291,6 @@ def recup_alias(cfg):
                         mail_alias = ('%s' % (row[zimbra_alias]))
                         # Ajout de l'alias mail en tant que valeur à la clef mail dans le dictionnaire "zimbra_enabled_users"
                         zimbra_enabled_users[mail] = mail_alias
-        #log("INFO", "zimbra", "Création d'un nouveau fichier 'liste_comptes_zimbra_j-1.csv', utilisable à la prochaine execution du script")
         # Renvoi du dictionnaire
         return zimbra_enabled_users
 
