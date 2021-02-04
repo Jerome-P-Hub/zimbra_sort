@@ -58,28 +58,34 @@ Script Python appelant différents modules.
 
 ## Procédure de mise en place:
     
-   Tout d'abord , déinifisser et inscriver dans le fichier conf.ini les prérequis nécessaires.
-   Créer ensuite les différents répertoires necessaires de l'architecture,et y copier les differents scripts python et fichier conf.ini
+   Tout d'abord , déinifissez et inscrivez dans le fichier conf.ini les prérequis nécessaires.
+   Créer ensuite les différents répertoires necessaires de l'architecture, et y copier les differents scripts python *.py et le fichier conf.ini
                 
               (Exemple: Créer /scripts/ et y copier les *.py et le fichier conf.ini
               Créer /scripts/lists/, /scripts/archiv/ et /scripts/logs/ )
              
  <br>
     
-   Si le script des alias est non nécessaire, editer le fichier sort.py et ajouter un # en début de ligne  sur les 3 derniereres fonctions, de la sorte:
+   Si le script pour créer des alias spécifiques est non nécessaire, editer le fichier sort.py et ajouter un # en début de ligne  sur les 3 derniereres fonctions, de la sorte:
              
               #utilisateurs_ad_actifs = recup_utilisateurs_actifs(cfg)
               #utilisateurs_alias = recup_alias(cfg)
               #creation_alias = creation_alias(cfg, utilisateurs_ad_actifs, utilisateurs_alias, dryrun)
               
  <br>             
-   Si le script de réintégration de la précédente BAL est non nécessaire, de la même manière, on commente les fonctions suivantes:
+   Si le script de réintégration de la précédente BAL est non nécessaire, de la même manière, commentez les fonctions suivantes:
               
               #liste_nouveaux = liste_nouveaux(recup_precedents_utilisateurs, utilisateurs_zimbra)
               #ajout_archive = ajout_archive(cfg, liste_nouveaux, dryrun)
 
 
+<br>
+<br>
 
+## Exécution:
+    
+   Le script s'exécutera lors du lancement de la commande "python sort.py".
+   Ainsi ,il effectuera les tâches demandées.
 
 
 
